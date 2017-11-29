@@ -17,6 +17,7 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        maven { url "https://github.com/AtWinner/LunaFramework/raw/master/" }//
     }
 }
 
