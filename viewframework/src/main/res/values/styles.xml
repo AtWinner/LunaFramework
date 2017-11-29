@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="mProgress_circle">
+        <item name="android:minWidth">25dp</item>
+        <item name="android:minHeight">25dp</item>
+        <item name="android:maxWidth">30dp</item>
+        <item name="android:maxHeight">30dp</item>
+    </style>
+</resources>

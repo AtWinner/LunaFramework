@@ -1,0 +1,14 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.hemaapp.hm_FrameWork">
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:supportsRtl="true">
+        <meta-data
+            android:name="com.hemaapp.hm_FrameWork.image.HemaGlideModule"
+            android:value="GlideModule" />
+
+    </application>
+
+</manifest>
