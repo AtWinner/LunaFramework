@@ -16,6 +16,6 @@ allprojects {
 ```
 dependencies {
     compile 'com.luna:base_framework:1.0.0'
-    compile 'com.luna:view_framework:1.0.0'
+    compile 'com.luna:view_framework:1.0.1'
 }
 ```
