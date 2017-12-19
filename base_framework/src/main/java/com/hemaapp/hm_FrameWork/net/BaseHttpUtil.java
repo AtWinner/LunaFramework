@@ -206,7 +206,7 @@ public class BaseHttpUtil {
                 data.append("sign=").append(sign);
 
                 if (!isNull(accessToken)) {
-                    data.append("access_token=").append(accessToken);
+                    data.append("&access_token=").append(accessToken);
                 }
                 dos.writeBytes(TWOHYPHENS + BOUNDARY + END);
                 dos.writeBytes("Content-Disposition: form-data; "
@@ -236,7 +236,7 @@ public class BaseHttpUtil {
                 data.append("sign=").append(sign);
 
                 if (!isNull(accessToken)) {
-                    data.append("access_token=").append(accessToken);
+                    data.append("&access_token=").append(accessToken);
                 }
 
                 dos.writeBytes(TWOHYPHENS + BOUNDARY + END);
@@ -399,7 +399,7 @@ public class BaseHttpUtil {
             }
         }
         if (!isNull(accessToken)) {
-            data.append("access_token=").append(accessToken);
+            data.append("&access_token=").append(accessToken);
         }
         HemaLogger.d(TAG, "The send data is \n" + data.toString());
         HttpURLConnection conn = null;
