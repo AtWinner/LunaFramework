@@ -23,6 +23,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -382,6 +383,7 @@ public class BaseHttpUtil {
                 if (!isNull(accessToken)) {
                     content += "|" + accessToken;
                 }
+                HemaLogger.i("sign", content);
                 String sign = Md5Util.getMd5(content);
                 data.append("sign=").append(sign);
             }
@@ -394,6 +396,7 @@ public class BaseHttpUtil {
                 if (!isNull(accessToken)) {
                     content += "|" + accessToken;
                 }
+                HemaLogger.i("sign", content);
                 String sign = Md5Util.getMd5(content);
                 data.append("sign=").append(sign);
             }
