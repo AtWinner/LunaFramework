@@ -6,6 +6,7 @@ import com.hemaapp.hm_FrameWork.exception.HttpException;
 import com.hemaapp.hm_FrameWork.util.FileTypeUtil;
 import com.hemaapp.hm_FrameWork.util.JsonUtil;
 import com.hemaapp.hm_FrameWork.util.HemaLogger;
+import com.hemaapp.hm_FrameWork.util.SharedPreferencesUtil;
 import com.hemaapp.hm_FrameWork.util.StreamUtil;
 import com.hemaapp.hm_FrameWork.util.TimeUtil;
 import com.hemaapp.hm_FrameWork.util.Md5Util;
@@ -32,6 +33,7 @@ import okhttp3.Response;
  * 网络请求相关工具类
  */
 public class BaseHttpUtil {
+    public static final String ACCESS_TOKEN = "access_token";
     private static final String TAG = "BaseHttpUtil";
     public static String sessionID = null;
 
@@ -51,9 +53,9 @@ public class BaseHttpUtil {
      * @throws DataParseException
      */
     public static JSONObject sendPOSTWithFilesForJSONObject(String path, HashMap<String, String> files, HashMap<String, String> params,
-                                                            String encoding) throws DataParseException, HttpException {
+                                                            String encoding, String accessToken) throws DataParseException, HttpException {
         return JsonUtil.toJsonObject(sendPOSTWithFilesForString(path,
-                files, params, encoding));
+                files, params, encoding, accessToken));
     }
 
     public static <T> T sendPOSTWithFilesForBaseResult(String path, HashMap<String, String> files, HashMap<String, String> params,
@@ -73,7 +75,7 @@ public class BaseHttpUtil {
      */
     public static String sendPOSTWithFilesForString(String path,
                                                     HashMap<String, String> files, HashMap<String, String> params,
-                                                    String encoding) throws HttpException {
+                                                    String encoding, String accessToken) throws HttpException {
         HttpURLConnection conn = null;
         try {
             URL url = new URL(path);
@@ -99,7 +101,7 @@ public class BaseHttpUtil {
             DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
 
             // 参数
-            writeParams(path, dos, params, encoding);
+            writeParams(path, dos, params, encoding, accessToken);
             // 文件
             writeFiles(dos, files);
             dos.writeBytes(TWOHYPHENS + BOUNDARY + TWOHYPHENS + END);
@@ -174,7 +176,7 @@ public class BaseHttpUtil {
      * @param encoding 编码方式
      * @throws IOException
      */
-    private static void writeParams(String path, DataOutputStream dos, HashMap<String, String> params, String encoding) throws IOException {
+    private static void writeParams(String path, DataOutputStream dos, HashMap<String, String> params, String encoding, String accessToken) throws IOException {
         StringBuilder data = new StringBuilder();
         if (params != null && !params.isEmpty()) {
             for (Map.Entry<String, String> entry : params.entrySet()) {
@@ -197,8 +199,16 @@ public class BaseHttpUtil {
                 String datetime = TimeUtil.getCurrentTime("yyyy-MM-dd HH:mm:ss");
                 data.append("&").append("datetime=").append(datetime).append("&");
                 String[] tempPath = path.split("/");
-                String sign = Md5Util.getMd5(PoplarConfig.DATAKEY + "|" + datetime + "|" + tempPath[tempPath.length - 1]);
+                String content = PoplarConfig.DATAKEY + "|" + datetime + "|" + tempPath[tempPath.length - 1];
+                if (isNull(accessToken)) {
+                    content += "|" + accessToken;
+                }
+                String sign = Md5Util.getMd5(content);
                 data.append("sign=").append(sign);
+
+                if (!isNull(accessToken)) {
+                    data.append("access_token=").append(accessToken);
+                }
                 dos.writeBytes(TWOHYPHENS + BOUNDARY + END);
                 dos.writeBytes("Content-Disposition: form-data; "
                         + "name=\"datetime\"" + END);
@@ -219,8 +229,16 @@ public class BaseHttpUtil {
                 String datetime = TimeUtil.getCurrentTime("yyyy-MM-dd HH:mm:ss");
                 data.append("datetime=").append(datetime).append("&");
                 String[] tempPath = path.split("/");
-                String sign = Md5Util.getMd5(PoplarConfig.DATAKEY + "|" + datetime + "|" + tempPath[tempPath.length - 1]);
+                String content = PoplarConfig.DATAKEY + "|" + datetime + "|" + tempPath[tempPath.length - 1];
+                if (isNull(accessToken)) {
+                    content += "|" + accessToken;
+                }
+                String sign = Md5Util.getMd5(content);
                 data.append("sign=").append(sign);
+
+                if (!isNull(accessToken)) {
+                    data.append("access_token=").append(accessToken);
+                }
 
                 dos.writeBytes(TWOHYPHENS + BOUNDARY + END);
                 dos.writeBytes("Content-Disposition: form-data; "
@@ -249,10 +267,10 @@ public class BaseHttpUtil {
      * @throws HttpException
      * @throws DataParseException
      */
-    public static JSONObject sendPOSTForJSONObject(String path, HashMap<String, String> params, String encoding)
+    public static JSONObject sendPOSTForJSONObject(String path, HashMap<String, String> params, String encoding, String accessToken)
             throws DataParseException, HttpException {
 //        return JsonUtil.toJsonObject(sendOkHttpPOSTForString(path, params, encoding));
-        return JsonUtil.toJsonObject(sendPOSTForString(path, params, encoding));
+        return JsonUtil.toJsonObject(sendPOSTForString(path, params, encoding, accessToken));
     }
 
     /**
@@ -265,7 +283,7 @@ public class BaseHttpUtil {
      * @throws IOException
      * @throws MalformedURLException
      */
-    public static String sendPOSTForString(String path, HashMap<String, String> params, String encoding)
+    public static String sendPOSTForString(String path, HashMap<String, String> params, String encoding, String accessToken)
             throws HttpException {
         StringBuilder data = new StringBuilder();
         HemaLogger.d(TAG, "The HttpUrl is \n" + path);
@@ -287,7 +305,11 @@ public class BaseHttpUtil {
                 String datetime = TimeUtil.getCurrentTime("yyyy-MM-dd HH:mm:ss");
                 data.append("&").append("datetime=").append(datetime).append("&");
                 String[] tempPath = path.split("/");
-                String sign = Md5Util.getMd5(PoplarConfig.DATAKEY + "|" + datetime + "|" + tempPath[tempPath.length - 1]);
+                String content = PoplarConfig.DATAKEY + "|" + datetime + "|" + tempPath[tempPath.length - 1];
+                if (isNull(accessToken)) {
+                    content += "|" + accessToken;
+                }
+                String sign = Md5Util.getMd5(content);
                 data.append("sign=").append(sign);
             }
         } else {
@@ -295,9 +317,16 @@ public class BaseHttpUtil {
                 String datetime = TimeUtil.getCurrentTime("yyyy-MM-dd HH:mm:ss");
                 data.append("datetime=").append(datetime).append("&");
                 String[] tempPath = path.split("/");
-                String sign = Md5Util.getMd5(PoplarConfig.DATAKEY + "|" + datetime + "|" + tempPath[tempPath.length - 1]);
+                String content = PoplarConfig.DATAKEY + "|" + datetime + "|" + tempPath[tempPath.length - 1];
+                if (isNull(accessToken)) {
+                    content += "|" + accessToken;
+                }
+                String sign = Md5Util.getMd5(content);
                 data.append("sign=").append(sign);
             }
+        }
+        if (!isNull(accessToken)) {
+            data.append("access_token=").append(accessToken);
         }
         HemaLogger.d(TAG, "The send data is \n" + data.toString());
         HttpURLConnection conn = null;
@@ -344,46 +373,6 @@ public class BaseHttpUtil {
         }
     }
 
-
-    public static String sendOkHttpPOSTForString(String path, HashMap<String, String> params, String encoding) {
-        OkHttpClient client = new OkHttpClient();
-        FormBody.Builder builder = new FormBody.Builder();
-        HemaLogger.d(TAG, "The HttpUrl is \n" + path);
-        if (params != null && !params.isEmpty()) {
-            for (Map.Entry<String, String> entry : params.entrySet()) {
-                String value;
-                if (entry.getValue() != null) {
-                    value = entry.getValue().replace("&", "%26"); // 转义&
-                    value = value.toString().replace("+", "%2B");  //转义+
-                } else {
-                    value = entry.getValue();
-                }
-                builder.add(entry.getKey(), value);
-            }
-        }
-        if (PoplarConfig.DIGITAL_CHECK) {  //开启数字签名
-            String datetime = TimeUtil.getCurrentTime("yyyy-MM-dd HH:mm:ss");
-            builder.add("datetime", datetime);
-            String[] tempPath = path.split("/");
-            String sign = Md5Util.getMd5(PoplarConfig.DATAKEY + "|" + datetime + "|" + tempPath[tempPath.length - 1]);
-            builder.add("sign", sign);
-        }
-        HemaLogger.d(TAG, "The send data is \n" + builder.toString());
-        FormBody body = builder.build();
-        Request request = new Request.Builder().url(path).post(body).build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                String data = response.body().string();
-                HemaLogger.d("response", data);
-                return data;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
     /**
      * 获取服务器返回流
      *
@@ -405,4 +394,10 @@ public class BaseHttpUtil {
         sessionID = null;
     }
 
+    private static boolean isNull(String content) {
+        if (content == null || "".equals(content)) {
+            return true;
+        }
+        return false;
+    }
 }
