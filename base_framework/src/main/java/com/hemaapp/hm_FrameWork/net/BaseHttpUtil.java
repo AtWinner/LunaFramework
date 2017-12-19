@@ -199,7 +199,7 @@ public class BaseHttpUtil {
                 data.append("&").append("datetime=").append(datetime).append("&");
                 String[] tempPath = path.split("/");
                 String content = PoplarConfig.DATAKEY + "|" + datetime + "|" + tempPath[tempPath.length - 1];
-                if (isNull(accessToken)) {
+                if (!isNull(accessToken)) {
                     content += "|" + accessToken;
                 }
                 String sign = Md5Util.getMd5(content);
@@ -229,7 +229,7 @@ public class BaseHttpUtil {
                 data.append("datetime=").append(datetime).append("&");
                 String[] tempPath = path.split("/");
                 String content = PoplarConfig.DATAKEY + "|" + datetime + "|" + tempPath[tempPath.length - 1];
-                if (isNull(accessToken)) {
+                if (!isNull(accessToken)) {
                     content += "|" + accessToken;
                 }
                 String sign = Md5Util.getMd5(content);
