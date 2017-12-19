@@ -299,6 +299,8 @@ public class BaseHttpUtil {
             String datetime = TimeUtil.getGMTTime("yyyy-MM-dd HH:mm:ss");
             String content = PoplarConfig.APP_ID + "|" + PoplarConfig.DATAKEY + "|" + datetime + "|access_token_get";
             data.append("sign=").append(Md5Util.getMd5(content));
+            data.append("&").append("datetime=").append(datetime);
+            HemaLogger.d(TAG, "The send data is \n" + data.toString());
         }
         HttpURLConnection conn = null;
         try {
