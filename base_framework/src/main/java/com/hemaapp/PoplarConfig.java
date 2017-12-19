@@ -75,6 +75,14 @@ public class PoplarConfig {
      * DATAKEY为服务器分配的项目唯一字符串
      */
     public static String DATAKEY = "";
+
+    /**
+     * 密码使用的公钥
+     */
+    public static String PASSWORD_KEY = "";
+
+    public static String APP_ID = "";
+
     /**
      * 登录请求id
      */

@@ -274,6 +274,37 @@ public class BaseHttpUtil {
     }
 
     /**
+     * 获取accessToken专用的方法
+     *
+     * @param params
+     * @return
+     * @throws DataParseException
+     */
+    public static JSONObject sendPOSTForJsonObjectGetAccessToken(HashMap<String, String> params) throws DataParseException {
+        StringBuilder data = new StringBuilder();
+        HemaLogger.d(TAG, "The HttpUrl is \n access_token_get");
+        if (params != null && !params.isEmpty()) {
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                data.append(entry.getKey()).append("=");
+                String value;
+                if (entry.getValue() != null) {
+                    value = entry.getValue().replace("&", "%26"); // 转义&
+                    value = value.toString().replace("+", "%2B");  //转义+
+                } else {
+                    value = entry.getValue();
+                }
+                data.append(value);
+                data.append("&");
+            }
+            data.append("app_id=" + PoplarConfig.APP_ID + "&");
+            String datetime = TimeUtil.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+            String content = PoplarConfig.APP_ID + "|" + PoplarConfig.DATAKEY + "|" + datetime + "|access_token_get";
+            data.append("sign=").append(Md5Util.getMd5(content));
+        }
+        return JsonUtil.toJsonObject(data.toString());
+    }
+
+    /**
      * 发送POST请求
      *
      * @param path   请求接口

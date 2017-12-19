@@ -322,11 +322,11 @@ public class PoplarUtil {
         if (!useMd5) {
             return text;
         }
-        return Md5Util.getMd5(PoplarConfig.DATAKEY + Md5Util.getMd5(text));
+        return Md5Util.getMd5(PoplarConfig.PASSWORD_KEY + Md5Util.getMd5(text));
     }
 
     public static String encryptPwd(String text) {
-        return Md5Util.getMd5(PoplarConfig.DATAKEY + Md5Util.getMd5(text));
+        return Md5Util.getMd5(PoplarConfig.PASSWORD_KEY + Md5Util.getMd5(text));
     }
 
     /**

@@ -68,7 +68,33 @@ public abstract class BaseNetWorker extends PoplarObject {
         if (hasNetWork()) {
             synchronized (this) {
                 if (netThread == null) {
-                    netThread = new NetThread(task);
+                    netThread = new NetThread(task, false);
+                    netThread.start();
+                    log_d("网络线程不存在或已执行完毕,开启新线程：" + netThread.getName());
+                } else {
+                    log_d(netThread.getName() + "执行中,添加网络任务");
+                    netThread.addTask(task);
+                }
+            }
+        } else {
+            if (onTaskExecuteListener != null) {
+                onTaskExecuteListener.onPostExecute(this, task);
+                onTaskExecuteListener.onNewExecuteFailed(this, task,
+                        FAILED_NONETWORK);
+            }
+        }
+    }
+
+    /**
+     * 发送post请求并且获取数据.该方法可发送文件数据 AccessToken
+     *
+     * @param task 网络请求任务new BaseNetTask(任务ID,任务URL, 任务参数集(参数名,参数值))
+     */
+    public void executeAccessTokenTask(BaseNetTask task) {
+        if (hasNetWork()) {
+            synchronized (this) {
+                if (netThread == null) {
+                    netThread = new NetThread(task, true);
                     netThread.start();
                     log_d("网络线程不存在或已执行完毕,开启新线程：" + netThread.getName());
                 } else {
@@ -121,8 +147,10 @@ public abstract class BaseNetWorker extends PoplarObject {
     private class NetThread extends Thread {
         private ArrayList<BaseNetTask> tasks = new ArrayList<BaseNetTask>();
         private boolean isRun = true;
+        private boolean isGetToken;
 
-        NetThread(BaseNetTask task) {
+        NetThread(BaseNetTask task, boolean isGetToken) {
+            this.isGetToken = isGetToken;
             tasks.add(task);
             setName("网络线程(" + getName() + ")");
         }
@@ -183,8 +211,12 @@ public abstract class BaseNetWorker extends PoplarObject {
                 Object object;
                 JSONObject jsonObject;
                 if (task.getFiles() == null) {
-                    jsonObject = BaseHttpUtil.sendPOSTForJSONObject(task.getPath(), task.getParams(),
-                            PoplarConfig.ENCODING, AccessInstance.getInstance(context).getAccessToken());
+                    if (isGetToken) {
+                        jsonObject = BaseHttpUtil.sendPOSTForJsonObjectGetAccessToken(task.getParams());
+                    } else {
+                        jsonObject = BaseHttpUtil.sendPOSTForJSONObject(task.getPath(), task.getParams(),
+                                PoplarConfig.ENCODING, AccessInstance.getInstance(context).getAccessToken());
+                    }
                     object = task.parse(jsonObject);
                 } else {
                     jsonObject = BaseHttpUtil.sendPOSTWithFilesForJSONObject(task.getPath(), task.getFiles(), task.getParams(),
@@ -340,20 +372,20 @@ public abstract class BaseNetWorker extends PoplarObject {
         /**
          * Runs on the UI thread before the task run.
          */
-        public void onPreExecute(BaseNetWorker netWorker, BaseNetTask task);
+        void onPreExecute(BaseNetWorker netWorker, BaseNetTask task);
 
         /**
          * Runs on the UI thread after the task run.
          */
-        public void onPostExecute(BaseNetWorker netWorker, BaseNetTask task);
+        void onPostExecute(BaseNetWorker netWorker, BaseNetTask task);
 
         /**
          * Runs on the UI thread when the task run success.
          *
          * @param result the result of the server back.
          */
-        public void onExecuteSuccess(BaseNetWorker netWorker, BaseNetTask task,
-                                     Object result);
+        void onExecuteSuccess(BaseNetWorker netWorker, BaseNetTask task,
+                              Object result);
 
         /**
          * Runs on the UI thread when the task run failed.
@@ -368,8 +400,8 @@ public abstract class BaseNetWorker extends PoplarObject {
          *                   HemaNetWorker.FAILED_NONETWORK}
          *                   </p>
          */
-        public void onNewExecuteFailed(BaseNetWorker netWorker, BaseNetTask task,
-                                       int failedType);
+        void onNewExecuteFailed(BaseNetWorker netWorker, BaseNetTask task,
+                                int failedType);
     }
 
     /**
@@ -388,6 +420,8 @@ public abstract class BaseNetWorker extends PoplarObject {
      * @return 如果当前用户是第三方登录的请返回true否则将自动调用{@link #clientLogin()}
      */
     public abstract boolean thirdSave();
+
+    public abstract void getAccessToken();
 
 
 }
