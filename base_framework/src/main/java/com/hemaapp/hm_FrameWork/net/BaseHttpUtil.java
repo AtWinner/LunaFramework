@@ -33,7 +33,6 @@ import okhttp3.Response;
  * 网络请求相关工具类
  */
 public class BaseHttpUtil {
-    public static final String ACCESS_TOKEN = "access_token";
     private static final String TAG = "BaseHttpUtil";
     public static String sessionID = null;
 
@@ -280,7 +279,7 @@ public class BaseHttpUtil {
      * @return
      * @throws DataParseException
      */
-    public static JSONObject sendPOSTForJsonObjectGetAccessToken(HashMap<String, String> params) throws DataParseException {
+    public static JSONObject sendPOSTForJsonObjectGetAccessToken(String path, HashMap<String, String> params, String encoding) throws DataParseException, HttpException {
         StringBuilder data = new StringBuilder();
         HemaLogger.d(TAG, "The HttpUrl is \n access_token_get");
         if (params != null && !params.isEmpty()) {
@@ -301,7 +300,48 @@ public class BaseHttpUtil {
             String content = PoplarConfig.APP_ID + "|" + PoplarConfig.DATAKEY + "|" + datetime + "|access_token_get";
             data.append("sign=").append(Md5Util.getMd5(content));
         }
-        return JsonUtil.toJsonObject(data.toString());
+        HttpURLConnection conn = null;
+        try {
+            byte[] entity = data.toString().getBytes();
+            conn = (HttpURLConnection) new URL(path).openConnection();
+            conn.setConnectTimeout(PoplarConfig.TIMEOUT_CONNECT_HTTP);
+            conn.setReadTimeout(PoplarConfig.TIMEOUT_READ_HTTP);
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+            // conn.setChunkedStreamingMode(0);
+            conn.setRequestProperty("Connection", "Keep-Alive");// 维持长连接
+            conn.setUseCaches(false);
+            conn.setRequestProperty("Charset", encoding);
+            conn.setRequestProperty("Content-Type",
+                    "application/x-www-form-urlencoded");
+            conn.setRequestProperty("Content-Length",
+                    String.valueOf(entity.length));
+            if (sessionID != null)
+                conn.setRequestProperty("Cookie", sessionID);// 设置cookie
+            DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
+            dos.write(entity);
+            dos.flush();
+            dos.close();
+            String cookie = conn.getHeaderField("set-cookie");
+            if (cookie != null)
+                sessionID = cookie.substring(0, cookie.indexOf(";"));// 获取sessionID
+
+            int code = conn.getResponseCode();
+            HemaLogger.d(TAG, "The responsecode is " + code);
+
+            InputStream in = (code == HttpURLConnection.HTTP_OK) ? conn
+                    .getInputStream() : null;
+
+            String indata = StreamUtil.iputStreamToString(in);
+            HemaLogger.d(TAG, "The back data is \n" + indata);
+            if (conn != null)
+                conn.disconnect();
+            return JsonUtil.toJsonObject(indata);
+        } catch (Exception e) {
+            if (conn != null)
+                conn.disconnect();
+            throw new HttpException(e);
+        }
     }
 
     /**

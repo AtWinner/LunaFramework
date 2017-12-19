@@ -212,7 +212,7 @@ public abstract class BaseNetWorker extends PoplarObject {
                 JSONObject jsonObject;
                 if (task.getFiles() == null) {
                     if (isGetToken) {
-                        jsonObject = BaseHttpUtil.sendPOSTForJsonObjectGetAccessToken(task.getParams());
+                        jsonObject = BaseHttpUtil.sendPOSTForJsonObjectGetAccessToken(task.getPath(), task.getParams(), PoplarConfig.ENCODING);
                     } else {
                         jsonObject = BaseHttpUtil.sendPOSTForJSONObject(task.getPath(), task.getParams(),
                                 PoplarConfig.ENCODING, AccessInstance.getInstance(context).getAccessToken());
