@@ -196,7 +196,7 @@ public class BaseHttpUtil {
             }
             data.deleteCharAt(data.length() - 1);
             if (PoplarConfig.DIGITAL_CHECK) {  //开启数字签名
-                String datetime = TimeUtil.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+                String datetime = TimeUtil.getGMTTime("yyyy-MM-dd HH:mm:ss");
                 data.append("&").append("datetime=").append(datetime).append("&");
                 String[] tempPath = path.split("/");
                 String content = PoplarConfig.DATAKEY + "|" + datetime + "|" + tempPath[tempPath.length - 1];
@@ -226,7 +226,7 @@ public class BaseHttpUtil {
 
         } else {
             if (PoplarConfig.DIGITAL_CHECK) {  //开启数字签名
-                String datetime = TimeUtil.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+                String datetime = TimeUtil.getGMTTime("yyyy-MM-dd HH:mm:ss");
                 data.append("datetime=").append(datetime).append("&");
                 String[] tempPath = path.split("/");
                 String content = PoplarConfig.DATAKEY + "|" + datetime + "|" + tempPath[tempPath.length - 1];
@@ -297,7 +297,7 @@ public class BaseHttpUtil {
                 data.append("&");
             }
             data.append("app_id=" + PoplarConfig.APP_ID + "&");
-            String datetime = TimeUtil.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+            String datetime = TimeUtil.getGMTTime("yyyy-MM-dd HH:mm:ss");
             String content = PoplarConfig.APP_ID + "|" + PoplarConfig.DATAKEY + "|" + datetime + "|access_token_get";
             data.append("sign=").append(Md5Util.getMd5(content));
         }
@@ -333,7 +333,7 @@ public class BaseHttpUtil {
             }
             data.deleteCharAt(data.length() - 1);
             if (PoplarConfig.DIGITAL_CHECK) {  //开启数字签名
-                String datetime = TimeUtil.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+                String datetime = TimeUtil.getGMTTime("yyyy-MM-dd HH:mm:ss");
                 data.append("&").append("datetime=").append(datetime).append("&");
                 String[] tempPath = path.split("/");
                 String content = PoplarConfig.DATAKEY + "|" + datetime + "|" + tempPath[tempPath.length - 1];
@@ -345,7 +345,7 @@ public class BaseHttpUtil {
             }
         } else {
             if (PoplarConfig.DIGITAL_CHECK) {  //开启数字签名
-                String datetime = TimeUtil.getCurrentTime("yyyy-MM-dd HH:mm:ss");
+                String datetime = TimeUtil.getGMTTime("yyyy-MM-dd HH:mm:ss");
                 data.append("datetime=").append(datetime).append("&");
                 String[] tempPath = path.split("/");
                 String content = PoplarConfig.DATAKEY + "|" + datetime + "|" + tempPath[tempPath.length - 1];
