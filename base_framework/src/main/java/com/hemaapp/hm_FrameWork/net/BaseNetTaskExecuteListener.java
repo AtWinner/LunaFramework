@@ -42,7 +42,9 @@ public abstract class BaseNetTaskExecuteListener extends PoplarObject implements
             }
 
         int taskId = netTask.getId();
-        if (taskId == PoplarConfig.ID_LOGIN || taskId == PoplarConfig.ID_THIRDSAVE) {// 登录任务
+        if (taskId == PoplarConfig.ID_LOGIN
+                || taskId == PoplarConfig.ID_THIRDSAVE
+                || taskId == PoplarConfig.GET_ACCESS_TOKEN) {// 登录任务
             if (failedTasks != null && failedTasks.size() > 0) {// token失效的自动登录，所有任务执行失败
                 for (BaseNetTask failedTask : failedTasks) {
                     if (!onAutoLoginFailed(netWorker,
@@ -68,7 +70,9 @@ public abstract class BaseNetTaskExecuteListener extends PoplarObject implements
         BaseNetWorker netWorker = (BaseNetWorker) worker;
         if (baseResult.isSuccess()) {// 服务器处理成功
             int taskId = netTask.getId();
-            if (taskId == PoplarConfig.ID_LOGIN || taskId == PoplarConfig.ID_THIRDSAVE) {// 如果为登录接口，保存用户信息
+            if (taskId == PoplarConfig.ID_LOGIN
+                    || taskId == PoplarConfig.ID_THIRDSAVE
+                    || taskId == PoplarConfig.GET_ACCESS_TOKEN) {// 如果为登录接口，保存用户信息
                 @SuppressWarnings("unchecked")
                 ArrayResult<PoplarUser> uResult = (ArrayResult<PoplarUser>) baseResult;
                 PoplarUser user = uResult.getObjects().get(0);
