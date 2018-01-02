@@ -69,10 +69,10 @@ public abstract class BaseNetTaskExecuteListener extends PoplarObject implements
         BaseNetTask netTask = (BaseNetTask) task;
         BaseNetWorker netWorker = (BaseNetWorker) worker;
         if (baseResult.isSuccess()) {// 服务器处理成功
+            onServerSuccess(netWorker, netTask, baseResult);
             int taskId = netTask.getId();
             if (taskId == PoplarConfig.ID_LOGIN
-                    || taskId == PoplarConfig.ID_THIRDSAVE
-                    || taskId == PoplarConfig.GET_ACCESS_TOKEN) {// 如果为登录接口，保存用户信息
+                    || taskId == PoplarConfig.ID_THIRDSAVE) {// 如果为登录接口，保存用户信息
                 @SuppressWarnings("unchecked")
                 ArrayResult<PoplarUser> uResult = (ArrayResult<PoplarUser>) baseResult;
                 PoplarUser user = uResult.getObjects().get(0);
@@ -86,8 +86,16 @@ public abstract class BaseNetTaskExecuteListener extends PoplarObject implements
 //                    checkUpdate(user);
 //                    return;
                 }
+            } else if (taskId == PoplarConfig.GET_ACCESS_TOKEN) {
+                if (failedTasks != null && failedTasks.size() > 0) {// token失效时的登录，只再次执行失败任务，不做其他操作
+                    for (BaseNetTask failedTask : failedTasks) {
+                        netWorker.executeTask(failedTask);
+                    }
+                    failedTasks.clear();
+//                    checkUpdate(user);
+//                    return;
+                }
             }
-            onServerSuccess(netWorker, netTask, baseResult);
         } else {// 服务器处理失败
             if (baseResult.getError_code() == 100) {// 访问令牌失效
                 if (failedTasks == null)
