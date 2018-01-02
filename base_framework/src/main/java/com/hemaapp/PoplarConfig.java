@@ -92,6 +92,10 @@ public class PoplarConfig {
      */
     public static final int ID_THIRDSAVE = -2;
     /**
+     * 第三方登录请求id
+     */
+    public static final int GET_ACCESS_TOKEN = -3;
+    /**
      * 是否启用友盟统计
      */
     public static boolean UMENG_ENABLE = false;

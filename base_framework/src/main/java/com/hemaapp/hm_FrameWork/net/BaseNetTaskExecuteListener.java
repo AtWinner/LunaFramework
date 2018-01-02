@@ -103,7 +103,8 @@ public abstract class BaseNetTaskExecuteListener extends PoplarObject implements
             } else {
                 int taskId = netTask.getId();
                 if (taskId == PoplarConfig.ID_LOGIN
-                        || taskId == PoplarConfig.ID_THIRDSAVE) {// 登录任务
+                        || taskId == PoplarConfig.ID_THIRDSAVE
+                        || taskId == PoplarConfig.GET_ACCESS_TOKEN) {// 登录任务
                     if (failedTasks != null && failedTasks.size() > 0) {// token失效的自动登录，所有任务执行失败
                         for (BaseNetTask failedTask : failedTasks) {
                             if (!onAutoLoginFailed((BaseNetWorker) netWorker,
