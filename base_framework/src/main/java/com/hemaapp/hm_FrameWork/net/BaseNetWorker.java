@@ -421,6 +421,9 @@ public abstract class BaseNetWorker extends PoplarObject {
      */
     public abstract boolean thirdSave();
 
+    /**
+     * 获取系统令牌
+     */
     public abstract void getAccessToken();
 
 

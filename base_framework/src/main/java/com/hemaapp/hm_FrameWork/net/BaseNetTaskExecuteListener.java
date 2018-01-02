@@ -85,7 +85,14 @@ public abstract class BaseNetTaskExecuteListener extends PoplarObject implements
             }
             onServerSuccess(netWorker, netTask, baseResult);
         } else {// 服务器处理失败
-            if (baseResult.getError_code() == 200) {// token失效自动登录，并重新执行该任务
+            if (baseResult.getError_code() == 100) {// 访问令牌失效
+                if (failedTasks == null)
+                    failedTasks = new ArrayList<BaseNetTask>();
+                failedTasks.add(netTask);
+                if (failedTasks.size() <= 1) {// 确保token失效登录只执行一次
+                    netWorker.getAccessToken();
+                }
+            } else if (baseResult.getError_code() == 101) {// token失效自动登录，并重新执行该任务
                 if (failedTasks == null)
                     failedTasks = new ArrayList<BaseNetTask>();
                 failedTasks.add(netTask);
