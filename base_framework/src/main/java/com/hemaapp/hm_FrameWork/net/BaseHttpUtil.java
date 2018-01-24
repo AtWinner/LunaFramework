@@ -96,8 +96,9 @@ public class BaseHttpUtil {
 
             conn.setRequestProperty("Connection", "Keep-Alive");
             conn.setRequestProperty("Charset", encoding);
-            if (sessionID != null)
+            if (sessionID != null) {
                 conn.setRequestProperty("Cookie", sessionID);// 设置cookie
+            }
             DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
 
             // 参数
@@ -108,8 +109,10 @@ public class BaseHttpUtil {
             dos.flush();
             dos.close();
             String cookie = conn.getHeaderField("set-cookie");
-            if (cookie != null)
+            conn.getHeaderFields();
+            if (cookie != null) {
                 sessionID = cookie.substring(0, cookie.indexOf(";"));// 获取sessionID
+            }
 
             String data = StreamUtil.iputStreamToString(get(conn));
             HemaLogger.d(TAG, "The back data is \n" + data);

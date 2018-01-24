@@ -39,7 +39,7 @@ public class ImageWorker extends PoplarObject {
             return;
         }
         log_i("loadImage:" + url);
-        Glide.with(mContext).load(url).placeholder(defaultImage).error(defaultImage).into(imageView);
+        Glide.with(mContext).load(url).asBitmap().placeholder(defaultImage).error(defaultImage).into(imageView);
     }
 
     /**
@@ -63,7 +63,7 @@ public class ImageWorker extends PoplarObject {
     public void loadImageBitmapFromPath(String path, ImageView imageView) {
         if (Util.isOnMainThread()) {
             log_i("loadImage:" + path);
-            Glide.with(mContext).load(path).into(imageView);
+            Glide.with(mContext).load(path).asBitmap().into(imageView);
         }
     }
 
