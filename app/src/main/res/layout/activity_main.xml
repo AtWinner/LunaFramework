@@ -11,12 +11,14 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello!" />
+        android:layout_margin="10dp"
+        android:text="Hello!"
+        android:visibility="gone" />
 
     <com.luna.togglebutton.ToggleButton
         android:layout_width="45dp"
         android:layout_height="25dp"
-        android:layout_marginRight="15dp"
+        android:layout_margin="10dp"
         toggle:offBorderColor="#d9d8d8"
         toggle:offColor="#d9d8d8"
         toggle:onColor="#3F51B5"
