@@ -1,1 +1,1 @@
-include ':app', ':base_framework', ':viewframework'
+include ':app', ':base_framework', ':viewframework', ':togglebutton'
