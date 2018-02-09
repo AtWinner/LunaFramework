@@ -109,4 +109,10 @@ public abstract class BasePresenter<V extends BaseView> extends PoplarObject imp
             mBaseView.showTextDialog(text);
         }
     }
+
+    public void cancelProgressDialog() {
+        if (mBaseView != null) {
+            mBaseView.cancelProgressDialog();
+        }
+    }
 }
