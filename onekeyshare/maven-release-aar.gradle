@@ -4,7 +4,7 @@ apply plugin: 'maven'
 ext {// ext is a gradle closure allowing the declaration of global properties
     PUBLISH_GROUP_ID = 'com.hemaapp'
     PUBLISH_ARTIFACT_ID = 'onekeyshare'
-    PUBLISH_VERSION = '2.7.6'
+    PUBLISH_VERSION = '2.7.7'
 }
 // 3.maven-路径
 uploadArchives {
