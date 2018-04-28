@@ -3,6 +3,8 @@ package com.luna.viewframework;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
