@@ -53,9 +53,9 @@ public class BaseHttpUtil {
      * @throws DataParseException
      */
     public static JSONObject sendPOSTWithFilesForJSONObject(String path, HashMap<String, String> files, HashMap<String, String> params,
-                                                            String encoding, String accessToken) throws DataParseException, HttpException {
+                                                            String encoding) throws DataParseException, HttpException {
         return JsonUtil.toJsonObject(sendPOSTWithFilesForString(path,
-                files, params, encoding, accessToken));
+                files, params, encoding));
     }
 
     public static <T> T sendPOSTWithFilesForBaseResult(String path, HashMap<String, String> files, HashMap<String, String> params,
@@ -75,7 +75,7 @@ public class BaseHttpUtil {
      */
     public static String sendPOSTWithFilesForString(String path,
                                                     HashMap<String, String> files, HashMap<String, String> params,
-                                                    String encoding, String accessToken) throws HttpException {
+                                                    String encoding) throws HttpException {
         HttpURLConnection conn = null;
         try {
             URL url = new URL(path);
@@ -102,7 +102,7 @@ public class BaseHttpUtil {
             DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
 
             // 参数
-            writeParams(path, dos, params, encoding, accessToken);
+            writeParams(path, dos, params, encoding);
             // 文件
             writeFiles(dos, files);
             dos.writeBytes(TWOHYPHENS + BOUNDARY + TWOHYPHENS + END);
@@ -179,8 +179,9 @@ public class BaseHttpUtil {
      * @param encoding 编码方式
      * @throws IOException
      */
-    private static void writeParams(String path, DataOutputStream dos, HashMap<String, String> params, String encoding, String accessToken) throws IOException {
+    private static void writeParams(String path, DataOutputStream dos, HashMap<String, String> params, String encoding) throws IOException {
         StringBuilder data = new StringBuilder();
+        String accessToken = AccessInstance.getInstance().getAccessToken();
         if (params != null && !params.isEmpty()) {
             for (Map.Entry<String, String> entry : params.entrySet()) {
                 // 方便查看发送参数，无实际意义
@@ -279,10 +280,10 @@ public class BaseHttpUtil {
      * @throws HttpException
      * @throws DataParseException
      */
-    public static JSONObject sendPOSTForJSONObject(String path, HashMap<String, String> params, String encoding, String accessToken)
+    public static JSONObject sendPOSTForJSONObject(String path, HashMap<String, String> params, String encoding)
             throws DataParseException, HttpException {
 //        return JsonUtil.toJsonObject(sendOkHttpPOSTForString(path, params, encoding));
-        return JsonUtil.toJsonObject(sendPOSTForString(path, params, encoding, accessToken));
+        return JsonUtil.toJsonObject(sendPOSTForString(path, params, encoding));
     }
 
     /**
@@ -369,8 +370,9 @@ public class BaseHttpUtil {
      * @throws IOException
      * @throws MalformedURLException
      */
-    public static String sendPOSTForString(String path, HashMap<String, String> params, String encoding, String accessToken)
+    public static String sendPOSTForString(String path, HashMap<String, String> params, String encoding)
             throws HttpException {
+        String accessToken = AccessInstance.getInstance().getAccessToken();
         StringBuilder data = new StringBuilder();
         HemaLogger.d(TAG, "The HttpUrl is \n" + path);
         if (params != null && !params.isEmpty()) {

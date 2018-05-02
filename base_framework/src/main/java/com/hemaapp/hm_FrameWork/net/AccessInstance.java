@@ -2,6 +2,7 @@ package com.hemaapp.hm_FrameWork.net;
 
 import android.content.Context;
 
+import com.hemaapp.hm_FrameWork.PoplarApplication;
 import com.hemaapp.hm_FrameWork.PoplarObject;
 import com.hemaapp.hm_FrameWork.util.SharedPreferencesUtil;
 
@@ -11,18 +12,21 @@ import com.hemaapp.hm_FrameWork.util.SharedPreferencesUtil;
  */
 
 public class AccessInstance extends PoplarObject {
-    private static AccessInstance instance = null;
+    private static volatile AccessInstance instance = null;
     private Context mContext;
     private String accessToken;
 
     public AccessInstance() {
-
+        this.mContext = PoplarApplication.getInstance();
     }
 
-    public static synchronized AccessInstance getInstance(Context mContext) {
+    public static AccessInstance getInstance() {
         if (instance == null) {
-            instance = new AccessInstance();
-            instance.mContext = mContext;
+            synchronized (AccessInstance.class) {
+                if (instance == null) {
+                    instance = new AccessInstance();
+                }
+            }
         }
         return instance;
     }

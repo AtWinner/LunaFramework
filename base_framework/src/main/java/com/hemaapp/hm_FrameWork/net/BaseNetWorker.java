@@ -215,12 +215,12 @@ public abstract class BaseNetWorker extends PoplarObject {
                         jsonObject = BaseHttpUtil.sendPOSTForJsonObjectGetAccessToken(task.getPath(), task.getParams(), PoplarConfig.ENCODING);
                     } else {
                         jsonObject = BaseHttpUtil.sendPOSTForJSONObject(task.getPath(), task.getParams(),
-                                PoplarConfig.ENCODING, AccessInstance.getInstance(context).getAccessToken());
+                                PoplarConfig.ENCODING);
                     }
                     object = task.parse(jsonObject);
                 } else {
                     jsonObject = BaseHttpUtil.sendPOSTWithFilesForJSONObject(task.getPath(), task.getFiles(), task.getParams(),
-                            PoplarConfig.ENCODING, AccessInstance.getInstance(context).getAccessToken());
+                            PoplarConfig.ENCODING);
                     object = task.parse(jsonObject);
                 }
                 mess.obj = result.put(task, object);
