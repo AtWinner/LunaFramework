@@ -33,7 +33,11 @@ public class AccessInstance extends PoplarObject {
 
     public String getAccessToken() {
         if (isNull(accessToken)) {
-            accessToken = SharedPreferencesUtil.get(mContext, "AccessToken");
+            synchronized (AccessInstance.class) {
+                if (isNull(accessToken)) {
+                    accessToken = SharedPreferencesUtil.get(mContext, "AccessToken");
+                }
+            }
         }
         return accessToken;
     }
