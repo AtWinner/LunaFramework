@@ -226,6 +226,15 @@ public class BaseHttpUtil {
                 dos.writeBytes(END);
                 dos.write(sign.getBytes(encoding));// writeBytes方法默认以ISO-8859-1编码,此处易出现汉字乱码问题
                 dos.writeBytes(END);
+
+                if (!isNull(accessToken)) {
+                    dos.writeBytes(TWOHYPHENS + BOUNDARY + END);
+                    dos.writeBytes("Content-Disposition: form-data; "
+                            + "name=\"access_token\"" + END);
+                    dos.writeBytes(END);
+                    dos.write(accessToken.getBytes(encoding));// writeBytes方法默认以ISO-8859-1编码,此处易出现汉字乱码问题
+                    dos.writeBytes(END);
+                }
             }
 
         } else {

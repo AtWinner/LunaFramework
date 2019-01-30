@@ -1,1 +1,1 @@
-include ':app', ':base_framework', ':viewframework', ':togglebutton', ':onekeyshare', ':sharesdk'
+include ':base_framework', ':viewframework', ':togglebutton', ':onekeyshare', ':sharesdk'
