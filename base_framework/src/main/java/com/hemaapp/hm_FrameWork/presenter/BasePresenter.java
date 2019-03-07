@@ -55,25 +55,25 @@ public abstract class BasePresenter<V extends BaseView> extends PoplarObject imp
         @Override
         public void onPostExecute(BaseNetWorker netWorker, BaseNetTask netTask) {
             if (mContext != null)
-            callAfterDataBack(netTask);
+                callAfterDataBack(netTask);
         }
 
         @Override
         public void onServerSuccess(BaseNetWorker netWorker, BaseNetTask netTask, BaseResult baseResult) {
             if (mContext != null)
-            callBackForServerSuccess(netTask, baseResult);
+                callBackForServerSuccess(netTask, baseResult);
         }
 
         @Override
         public void onServerFailed(BaseNetWorker netWorker, BaseNetTask netTask, BaseResult baseResult) {
             if (mContext != null)
-            callBackForServerFailed(netTask, baseResult);
+                callBackForServerFailed(netTask, baseResult);
         }
 
         @Override
         public void onExecuteFailed(BaseNetWorker netWorker, BaseNetTask netTask, int failedType) {
             if (mContext != null)
-            callBackForGetDataFailed(netTask, failedType);
+                callBackForGetDataFailed(netTask, failedType);
         }
 
         @Override
@@ -124,7 +124,8 @@ public abstract class BasePresenter<V extends BaseView> extends PoplarObject imp
     public void releasePresenter() {
         mContext = null;
         mBaseView = null;
-        netWorker.cancelTasks();
+        if (netWorker != null)
+            netWorker.cancelTasks();
         netWorker = null;
     }
 }
