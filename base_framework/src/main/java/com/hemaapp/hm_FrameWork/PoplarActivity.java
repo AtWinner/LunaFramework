@@ -334,6 +334,10 @@ public abstract class PoplarActivity<T extends BasePresenter> extends AppCompatA
         destroy();
         super.onDestroy();
         recyclePics();// 回收图片
+        if (mPresenter != null) {
+            mPresenter.releasePresenter();
+            mPresenter = null;
+        }
     }
 
     public void destroy() {
@@ -616,4 +620,5 @@ public abstract class PoplarActivity<T extends BasePresenter> extends AppCompatA
             }
         }, 2000);
     }
+
 }

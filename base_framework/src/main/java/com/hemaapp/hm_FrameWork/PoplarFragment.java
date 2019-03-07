@@ -82,6 +82,10 @@ public abstract class PoplarFragment<T extends BasePresenter> extends Fragment i
         ToastUtil.cancelAllToast();
         cancelProgressDialog();
         cancelTextDialog();
+        if (mPresenter != null) {
+            mPresenter.releasePresenter();
+            mPresenter = null;
+        }
     }
 
     @Override
