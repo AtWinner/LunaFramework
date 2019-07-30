@@ -255,31 +255,38 @@ public class RefreshLoadmoreLayout extends ViewGroup {
                     float absY = Math.abs(moveY);
                     float absX = Math.abs(moveX);
                     if (absY > absX && absY > mTouchSlop) {
-                        if (moveY > 0 && !canContentScrollUp()) {
-                            pullDown = true;
-                            if(!super.onInterceptTouchEvent(ev)){
-                                if (isRefreshable) {
-                                    return true;
+                        if (getChildCount() == 0) {
+                            return true;
+                        }
+                        View childView = getChildAt(0);
+                        if (childView instanceof ViewGroup) {
+                            ViewGroup viewGroup = (ViewGroup) childView;
+                            if (moveY > 0 && !canContentScrollUp()) {
+                                if (!super.onInterceptTouchEvent(ev) && !viewGroup.onInterceptTouchEvent(ev)) {
+                                    pullDown = true;
+                                    if (isRefreshable) {
+                                        return true;
+                                    }
                                 }
-                            }
 //                            if (isRefreshable) {
 //                                return true;
 //                            } else {
 //                                return super.onInterceptTouchEvent(ev);
 //                            }
-                        }
-                        if (moveY < 0 && !canContentScrollDown()) {
-                            pullDown = false;
-                            if(!super.onInterceptTouchEvent(ev)){
-                                if (isLoadmoreable) {
-                                    return true;
-                                }
                             }
+                            if (moveY < 0 && !canContentScrollDown()) {
+                                if (!super.onInterceptTouchEvent(ev) && !viewGroup.onInterceptTouchEvent(ev)) {
+                                    pullDown = false;
+                                    if (isLoadmoreable) {
+                                        return true;
+                                    }
+                                }
                            /* if (isLoadmoreable) {
                                 return true;
                             } else {
                                 return super.onInterceptTouchEvent(ev);
                             }*/
+                            }
                         }
                     }
                     break;
