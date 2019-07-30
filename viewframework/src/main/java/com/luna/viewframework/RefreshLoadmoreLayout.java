@@ -257,19 +257,29 @@ public class RefreshLoadmoreLayout extends ViewGroup {
                     if (absY > absX && absY > mTouchSlop) {
                         if (moveY > 0 && !canContentScrollUp()) {
                             pullDown = true;
-                            if (isRefreshable) {
-                                return true;
-                            } else {
-                                return super.onInterceptTouchEvent(ev);
+                            if(!super.onInterceptTouchEvent(ev)){
+                                if (isRefreshable) {
+                                    return true;
+                                }
                             }
+//                            if (isRefreshable) {
+//                                return true;
+//                            } else {
+//                                return super.onInterceptTouchEvent(ev);
+//                            }
                         }
                         if (moveY < 0 && !canContentScrollDown()) {
                             pullDown = false;
-                            if (isLoadmoreable) {
+                            if(!super.onInterceptTouchEvent(ev)){
+                                if (isLoadmoreable) {
+                                    return true;
+                                }
+                            }
+                           /* if (isLoadmoreable) {
                                 return true;
                             } else {
                                 return super.onInterceptTouchEvent(ev);
-                            }
+                            }*/
                         }
                     }
                     break;
